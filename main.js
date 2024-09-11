@@ -16,6 +16,15 @@ const buttons=[{x:90,y:60,w:140,h:110,text:"連想する",c:"#00000000",c2:"#000
 const lists=[];
 var alchemyTable=[];
 var alchemyRecipe=[{
+resources:["氷","山"],
+results:["氷山"]
+},{
+resources:["海洋","火山"],
+results:["海底火山"]
+},{
+resources:["原始海洋","火山"],
+results:["熱水噴出孔"]
+},{
 resources:["火","水"],
 results:["蒸気"]
 },{
@@ -819,6 +828,9 @@ lists.push({text:"雪",score:1,c:"#00000000"});
 lists.push({text:"犬",score:1,c:"#00000000"});
 lists.push({text:"ネズミ",score:1,c:"#00000000"});
 lists.push({text:"ビーバー",score:1,c:"#00000000"});
+lists.push({text:"氷山",score:1,c:"#00000000"});
+lists.push({text:"海底火山",score:1,c:"#00000000"});
+lists.push({text:"熱水噴出孔",score:1,c:"#00000000"});
 lists.push({text:"ハムスター",score:1,c:"#00000000"});
 lists.push({text:"ひまわり",score:1,c:"#00000000"});
 lists.push({text:"牛乳",score:1,c:"#00000000"});
