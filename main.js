@@ -1,0 +1,1075 @@
+const c=new hachchchctx();
+const canvas = document.querySelector(".canvas");
+const ctx = canvas.getContext("2d");
+ctx.font = "22px serif";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+const mouse = {x: null,y: null}
+canvas.addEventListener('mousemove', (evt) => {
+    mouse.x = evt.offsetX;
+    mouse.y = evt.offsetY;
+});
+const buttons=[{x:90,y:60,w:140,h:110,text:"連想する",c:"#00000000",c2:"#000000",status:"システム",interval:0}];
+const lists=[];
+var alchemyTable=[];
+var alchemyRecipe=[{
+resources:["火","水"],
+results:["蒸気"]
+},{
+resources:["蒸気","海洋"],
+results:["雲"]
+},{
+resources:["自然","水"],
+results:["沼地","川","海洋"]
+},{
+resources:["風","水"],
+results:["自然","寒さ"]
+},{
+resources:["風","火"],
+results:["熱"]
+},{
+resources:["自然","雷"],
+results:["エネルギー"]
+    },{
+resources:["自然","エネルギー"],
+results:["災害"]
+    },{
+resources:["寒さ","水"],
+results:["氷"]
+    },{
+resources:["氷","火"],
+results:["エネルギー","化学エネルギー","水"]
+    },{
+resources:["エネルギー","海洋"],
+results:["生命","誕生"]
+    },{
+resources:["海洋","火"],
+results:["溶岩"]
+    },{
+resources:["溶岩","寒さ"],
+results:["石"]
+    },{
+resources:["石","自然"],
+results:["山"]
+    },{
+    resources:["山","火"],
+results:["火山"]
+    },{
+    resources:["火山","エネルギー"],
+results:["溶岩","熱"]
+    },{
+    resources:["空気","エネルギー"],
+results:["圧力"]
+    },{
+resources:["変異","細菌"],
+results:["古細菌"]
+    },{
+resources:["細菌","古細菌"],
+results:["藻類","後方鞭毛生物"]
+    },{
+resources:["後方鞭毛生物","腐食"],
+results:["真菌"]
+    },{
+resources:["後方鞭毛生物","愛"],
+results:["動物"]
+    },{
+resources:["動物","海洋"],
+results:["魚類"]
+    },{
+resources:["動物","ビーチ"],
+results:["サンゴ礁"]
+    },{
+resources:["藻類","色"],
+results:["紅藻","緑藻"]
+    },{
+resources:["藻類","変異"],
+results:["原虫","褐藻"]
+    },{
+    resources:["圧力","水"],
+results:["水圧"]
+    },{
+resources:["原始海洋","雷","ガス"],
+results:["アミノ酸"]
+    },{
+resources:["蒸気","自然"],
+results:["ガス"]
+    },{
+resources:["海洋","熱"],
+results:["原始海洋"]
+    },{
+resources:["アミノ酸","化学エネルギー"],
+results:["タンパク質"]
+    },{
+resources:["タンパク質","化学エネルギー"],
+results:["DNA"]
+    },{
+resources:["DNA","タンパク質","化学エネルギー"],
+results:["生命","細菌","誕生"]
+    },{
+resources:["生命","エネルギー"],
+results:["代謝"]
+    },{
+resources:["DNA","エネルギー"],
+results:["変異"]
+    },{
+resources:["DNA","タンパク質"],
+results:["染色体"]
+    },{
+resources:["自然","生命"],
+results:["動物","植物"]
+    },{
+resources:["植物","水"],
+results:["成長"]
+    },{
+resources:["動物","誕生"],
+results:["愛"]
+    },{
+resources:["生命","災害"],
+results:["死"]
+    },{
+resources:["誕生","死"],
+results:["時間"]
+    },{
+resources:["植物","成長"],
+results:["木"]
+    },{
+resources:["木","成長"],
+results:["森"]
+    },{
+resources:["植物","進化"],
+results:["被子植物"]
+    },{
+resources:["被子植物","平原"],
+results:["綿花"]
+    },{
+resources:["綿花","圧力"],
+results:["毛"]
+    },{
+resources:["毛","動物","進化"],
+results:["哺乳類"]
+    },{
+resources:["変異","時間"],
+results:["進化"]
+    },{
+resources:["生命","時間"],
+results:["進化","死"]
+    },{
+resources:["植物","光"],
+results:["エネルギー","酸素"]
+    },{
+resources:["動物","エネルギー"],
+results:["二酸化炭素"]
+    },{
+resources:["自然","風"],
+results:["空気"]
+    },{
+resources:["自然","植物"],
+results:["平原"]
+    },{
+resources:["雲","水"],
+results:["雨"]
+    },{
+resources:["森","熱","雨"],
+results:["熱帯雨林"]
+    },{
+resources:["熱帯雨林","哺乳類"],
+results:["霊長類"]
+    },{
+resources:["霊長類","進化"],
+results:["人間"]
+    },{
+resources:["人間","石"],
+results:["道具"]
+    },{
+resources:["人間","死"],
+results:["葬儀"]
+    },{
+resources:["人間","時間"],
+results:["老化"]
+    },{
+resources:["人間","火"],
+results:["文明"]
+    },{
+resources:["人間","植物"],
+results:["農業"]
+    },{
+resources:["石","道具"],
+results:["つるはし"]
+    },{
+    resources:["木","道具"],
+results:["斧"]
+    },{
+    resources:["植物","道具"],
+results:["くわ"]
+    },{
+    resources:["金属","道具"],
+results:["刃"]
+    },{
+resources:["道具","刃"],
+results:["剣"]
+    },{
+resources:["斧","木"],
+results:["木材"]
+        },{
+resources:["つるはし","石"],
+results:["石材"]
+        },{
+resources:["つるはし","山"],
+results:["鉱山"]
+        },{
+resources:["つるはし","鉱山"],
+results:["金属"]
+        },{
+resources:["道具","木材"],
+results:["車輪"]
+        },{
+resources:["車輪","金属"],
+results:["歯車"]
+        },{
+resources:["川","歯車"],
+results:["力学的エネルギー"]
+        },{
+resources:["砂","水"],
+results:["粘土"]
+            },{
+resources:["石","道具","人間"],
+results:["石像"]
+            },{
+resources:["石像","剣"],
+results:["英雄"]
+            },{
+resources:["剣","人間"],
+results:["戦争"]
+            },{
+resources:["金属","光"],
+results:["金"]
+            },{
+resources:["金","紙"],
+results:["紙幣"]
+            },{
+resources:["粘土","火"],
+results:["レンガ"]
+            },{
+resources:["レンガ","木材","ガラス"],
+results:["家"]
+    },{
+resources:["砂","火"],
+results:["ガラス"]
+    },{
+resources:["ガラス","光"],
+results:["火","レンズ"]
+    },{
+    resources:["文明","王"],
+results:["国"]
+    },{
+resources:["金","人間"],
+results:["王"]
+    },{
+resources:["道具","砂"],
+results:["シャベル"]
+    },{
+resources:["海洋","砂"],
+results:["ビーチ"]
+    },{
+resources:["酸素","水","金属"],
+results:["水酸化ナトリウム","化学エネルギー"]
+    },{
+resources:["つるはし","火山"],
+results:["硫黄"]
+    },{
+resources:["酸素","硫黄"],
+results:["硫酸","化学エネルギー"]
+    },{
+resources:["硫酸","水酸化ナトリウム"],
+results:["電気"]
+    },{
+resources:["道具","電気"],
+results:["機械"]
+    },{
+resources:["機械","空気","石油"],
+results:["飛行機"]
+    },{
+    resources:["飛行機","戦争"],
+results:["戦闘機"]
+    },{
+    resources:["機械","人間"],
+results:["アンドロイド"]
+    },{
+    resources:["機械","車輪","石油"],
+results:["車"]
+    },{
+resources:["硫黄","炭素"],
+results:["火薬"]
+    },{
+resources:["火薬","空気"],
+results:["花火"]
+    },{
+resources:["火薬","粘土","圧力","水"],
+results:["爆弾"]
+    },{
+resources:["時間","自然"],
+results:["腐食"]
+    },{
+resources:["道具","放射性物質"],
+results:["原子力"]
+    },{
+resources:["エネルギー","金属"],
+results:["放射性物質"]
+    },{
+resources:["圧力","石"],
+results:["砂"]
+    },{
+resources:["火","生命"],
+results:["炭素"]
+    },{
+resources:["圧力","生命"],
+results:["炭素"]
+    },{
+resources:["炭素","水"],
+results:["石油"]
+    },{
+resources:["石油","火"],
+results:["熱"]
+    },{
+resources:["緑藻","進化"],
+results:["植物"]
+    },{
+resources:["雨","時間"],
+results:["虹","光"]
+    },{
+resources:["虹","ガラス"],
+results:["紫外線","赤外線"]
+    },{
+resources:["紫外線","赤外線"],
+results:["色"]
+    },{
+resources:["自然","砂"],
+results:["砂漠"]
+    },{
+resources:["レンズ","砂"],
+results:["ミクロ"]
+    },{
+resources:["水","ミクロ"],
+results:["酸素"]
+    },{
+resources:["酸素","ミクロ"],
+results:["レプトン","フォトン","中性子","陽子"]
+    },{
+resources:["中性子","ミクロ"],
+results:["クォーク"]
+    },{
+resources:["陽子","ミクロ"],
+results:["クォーク"]
+    },{
+resources:["フォトン","ミクロ"],
+results:["謎"]
+    },{
+resources:["誕生","自然"],
+results:["謎"]
+    },{
+resources:["死","自然"],
+results:["謎"]
+    },{
+resources:["謎","クォーク"],
+results:["CP対称性の破れ"]
+    },{
+resources:["光","熱","化学エネルギー","エネルギー"],
+results:["太陽"]
+    },{
+resources:["火薬","火"],
+results:["爆発","エネルギー"]
+    },{
+resources:["太陽","死"],
+results:["紫外線","爆発","エネルギー"]
+    },{
+resources:["太陽","時間"],
+results:["昼"]
+    },{
+resources:["月","時間"],
+results:["夜"]
+    },{
+resources:["謎","人間"],
+results:["神話"]
+    },{
+resources:["ガス","エネルギー"],
+results:["宇宙"]
+    },{
+resources:["宇宙","石"],
+results:["隕石"]
+    },{
+resources:["誕生","時間"],
+results:["原生代"]
+    },{
+resources:["原生代","時間"],
+results:["古生代"]
+    },{
+resources:["古生代","時間"],
+results:["中生代"]
+    },{
+resources:["中生代","時間"],
+results:["新生代"]
+    },{
+resources:["新生代","時間"],
+results:["人新世"]
+    },{
+resources:["人新世","時間"],
+results:["謎"]
+    },{
+resources:["機械","時間"],
+results:["タイムマシン"]
+    },{
+resources:["人新世","生命"],
+results:["人間"]
+    },{
+resources:["宇宙","謎"],
+results:["多元宇宙"]
+    },{
+resources:["宇宙","誕生"],
+results:["ビッグバン","爆発","謎"]
+    },{
+resources:["宇宙","生命"],
+results:["宇宙人"]
+    },{
+resources:["隕石","原始海洋"],
+results:["生命","誕生","謎"]
+    },{
+resources:["生命","原生代"],
+results:["酸素","寒さ"]
+    },{
+resources:["生命","硫黄","原生代"],
+results:["化学エネルギー"]
+    },{
+resources:["爆発","古生代"],
+results:["カンブリア爆発"]
+    },{
+resources:["カンブリア爆発","甲殻類"],
+results:["アノマロカリス"]
+    },{
+resources:["光","生命"],
+results:["目"]
+    },{
+resources:["目","生命"],
+results:["カンブリア爆発"]
+    },{
+resources:["生命","古生代"],
+results:["魚類"]
+    },{
+resources:["隕石","中生代"],
+results:["絶滅"]
+    },{
+resources:["絶滅","骨"],
+results:["化石"]
+    },{
+resources:["シャベル","葬儀"],
+results:["骨"]
+    },{
+resources:["化石","時間"],
+results:["恐竜"]
+    },{
+resources:["中生代","生命"],
+results:["恐竜"]
+    },{
+resources:["恐竜","進化"],
+results:["鳥類"]
+    },{
+resources:["原虫","海洋"],
+results:["珪藻"]
+    },{
+resources:["珪藻","圧力"],
+results:["土地"]
+    },{
+resources:["砂","圧力"],
+results:["土地"]
+    },{
+resources:["哺乳類","海洋"],
+results:["鯨類"]
+    },{
+resources:["鯨類","捕食"],
+results:["イルカ"]
+    },{
+resources:["イルカ","川"],
+results:["カワイルカ"]
+    },{
+resources:["森","斧"],
+results:["切り株"]
+    },{
+resources:["哺乳類","チーズ"],
+results:["ネズミ"]
+    },{
+resources:["石材","人間"],
+results:["石像"]
+    },{
+resources:["哺乳類","平原"],
+results:["鹿"]
+    },{
+resources:["鹿","進化"],
+results:["馬"]
+    },{
+resources:["鹿","サバンナ"],
+results:["キリン"]
+    },{
+resources:["動物","人間"],
+results:["家畜"]
+    },{
+resources:["家畜","平原"],
+results:["牛","羊"]
+    },{
+resources:["牛","人間"],
+results:["牛乳"]
+    },{
+resources:["牛乳","真菌"],
+results:["チーズ"]
+    },{
+resources:["ネズミ","川"],
+results:["ビーバー"]
+    },{
+resources:["ネズミ","進化"],
+results:["霊長類"]
+    },{
+resources:["ネズミ","人間"],
+results:["ハムスター"]
+    },{
+resources:["家畜","愛"],
+results:["猫"]
+    },{
+resources:["サバンナ","哺乳類"],
+results:["象"]
+    },{
+resources:["砂漠","植物"],
+results:["サバンナ"]
+    },{
+resources:["猫","サバンナ"],
+results:["ライオン"]
+    },{
+resources:["家","家畜"],
+results:["フェンス"]
+    },{
+resources:["フェンス","金属"],
+results:["檻"]
+    },{
+resources:["檻","動物"],
+results:["動物園"]
+    },{
+resources:["太陽","被子植物"],
+results:["ひまわり"]
+    },{
+resources:["雨","寒さ"],
+results:["雪"]
+    },{
+resources:["森","雪"],
+results:["針葉樹林"]
+    },{
+resources:["森","哺乳類"],
+results:["オオカミ"]
+    },{
+resources:["オオカミ","人間"],
+results:["犬"]
+    },{
+resources:["文明","家"],
+results:["都市"]
+    },{
+resources:["鳥類","都市"],
+results:["ハト"]
+    },{
+resources:["鳥類","熱帯雨林"],
+results:["オウム"]
+    },{
+resources:["サンゴ礁","進化"],
+results:["クラゲ"]
+    },{
+resources:["クラゲ","進化"],
+results:["カブトクラゲ"]
+    },{
+resources:["鳥類","川"],
+results:["アヒル"]
+    },{
+resources:["鳥類","サバンナ"],
+results:["ダチョウ"]
+    },{
+resources:["鳥類","海洋"],
+results:["カモメ"]
+    },{
+resources:["鳥類","愛"],
+results:["白鳥"]
+    },{
+resources:["鳥類","森"],
+results:["雀"]
+    },{
+resources:["鳥類","氷"],
+results:["ペンギン"]
+    },{
+resources:["人間","口"],
+results:["言葉"]
+    },{
+resources:["動物","捕食"],
+results:["口"]
+    },{
+resources:["動物","死"],
+results:["捕食"]
+    },{
+resources:["被子植物","時間"],
+results:["果物"]
+    },{
+resources:["果物","圧力"],
+results:["アルコール"]
+    },{
+resources:["アルコール","エネルギー"],
+results:["火"]
+    },{
+resources:["木","圧力"],
+results:["紙"]
+    },{
+resources:["炭素","木材"],
+results:["鉛筆"]
+    },{
+resources:["炭素","圧力"],
+results:["ダイアモンド"]
+    },{
+resources:["紙","鉛筆","言葉"],
+results:["筆記"]
+    },{
+resources:["色","鉛筆"],
+results:["色鉛筆"]
+    },{
+resources:["紙","色鉛筆"],
+results:["絵"]
+    },{
+resources:["絵","石"],
+results:["ラスコー洞窟壁画"]
+    },{
+resources:["葬儀","王"],
+results:["ピラミッド"]
+    },{
+resources:["石材","火","ビーチ"],
+results:["灯台"]
+    },{
+resources:["灯台","石像"],
+results:["巨人像"]
+    },{
+resources:["木材","海洋"],
+results:["木造船"]
+    },{
+resources:["木造船","戦争"],
+results:["ガレオン船"]
+    },{
+resources:["木造船","金属"],
+results:["鉄甲船"]
+    },{
+resources:["鉄甲船","戦争"],
+results:["フリゲート艦"]
+    },{
+resources:["鉄甲船","戦闘機"],
+results:["航空母艦"]
+    },{
+resources:["海洋","人間"],
+results:["海賊"]
+    },{
+resources:["海賊","木造船"],
+results:["海賊船"]
+    },{
+resources:["言葉","文明"],
+results:["国"]
+    },{
+resources:["宇宙","光"],
+results:["星"]
+    },{
+resources:["星","国"],
+results:["アメリカ"]
+    },{
+resources:["人間","アメリカ"],
+results:["自由の女神"]
+    },{
+resources:["言葉","アメリカ"],
+results:["英語"]
+    },{
+resources:["宇宙","道具"],
+results:["人工衛星"]
+    },{
+resources:["宇宙","鉄甲船"],
+results:["宇宙船"]
+    },{
+resources:["宇宙人","アメリカ"],
+results:["エリア51"]
+    },{
+resources:["恐竜","神話"],
+results:["ドラゴン"]
+    },{
+resources:["沼地","木"],
+results:["マングローブ"]
+    },{
+resources:["川","緑藻"],
+results:["アマモ"]
+    },{
+resources:["海洋","褐藻"],
+results:["昆布"]
+    },{
+resources:["魚類","捕食"],
+results:["サメ"]
+    },{
+resources:["動物","ミクロ"],
+results:["昆虫"]
+    },{
+resources:["昆虫","木"],
+results:["カブトムシ"]
+    },{
+resources:["昆布","熱","水"],
+results:["だし"]
+    },{
+resources:["植物","沼地"],
+results:["コケ"]
+    },{
+resources:["真菌","緑藻"],
+results:["地衣類"]
+    },{
+resources:["火星","コケ","水"],
+results:["テラフォーミング"]
+    },{
+resources:["火","星"],
+results:["火星"]
+    },{
+resources:["火","酸素"],
+results:["二酸化炭素"]
+    },{
+resources:["酸素","炭素"],
+results:["二酸化炭素"]
+}];
+lists.push({text:"火",score:1,c:"#00000000"});
+lists.push({text:"ガス惑星",score:1,c:"#00000000"});
+lists.push({text:"星",score:1,c:"#00000000"});
+lists.push({text:"アメリカ",score:1,c:"#00000000"});
+lists.push({text:"ビッグバン",score:1,c:"#00000000"});
+lists.push({text:"コケ",score:1,c:"#00000000"});
+lists.push({text:"タイムマシン",score:1,c:"#00000000"});
+lists.push({text:"アマモ",score:1,c:"#00000000"});
+lists.push({text:"昆虫",score:1,c:"#00000000"});
+lists.push({text:"カブトムシ",score:1,c:"#00000000"});
+lists.push({text:"英語",score:1,c:"#00000000"});
+lists.push({text:"地衣類",score:1,c:"#00000000"});
+lists.push({text:"テラフォーミング",score:1,c:"#00000000"});
+lists.push({text:"マングローブ",score:1,c:"#00000000"});
+lists.push({text:"昆布",score:1,c:"#00000000"});
+lists.push({text:"多元宇宙",score:1,c:"#00000000"});
+lists.push({text:"だし",score:1,c:"#00000000"});
+lists.push({text:"自由の女神",score:1,c:"#00000000"});
+lists.push({text:"ドラゴン",score:1,c:"#00000000"});
+lists.push({text:"エリア51",score:1,c:"#00000000"});
+lists.push({text:"鉛筆",score:1,c:"#00000000"});
+lists.push({text:"宇宙船",score:1,c:"#00000000"});
+lists.push({text:"人工衛星",score:1,c:"#00000000"});
+lists.push({text:"ラスコー洞窟壁画",score:1,c:"#00000000"});
+lists.push({text:"ピラミッド",score:1,c:"#00000000"});
+lists.push({text:"木造船",score:1,c:"#00000000"});
+lists.push({text:"ガレオン船",score:1,c:"#00000000"});
+lists.push({text:"鉄甲船",score:1,c:"#00000000"});
+lists.push({text:"航空母艦",score:1,c:"#00000000"});
+lists.push({text:"海賊戦",score:1,c:"#00000000"});
+lists.push({text:"海賊",score:1,c:"#00000000"});
+lists.push({text:"フリゲート艦",score:1,c:"#00000000"});
+lists.push({text:"灯台",score:1,c:"#00000000"});
+lists.push({text:"巨人像",score:1,c:"#00000000"});
+lists.push({text:"ダイアモンド",score:1,c:"#00000000"});
+lists.push({text:"チーズ",score:1,c:"#00000000"});
+lists.push({text:"猫",score:1,c:"#00000000"});
+lists.push({text:"絵",score:1,c:"#00000000"});
+lists.push({text:"色鉛筆",score:1,c:"#00000000"});
+lists.push({text:"筆記",score:1,c:"#00000000"});
+lists.push({text:"針葉樹林",score:1,c:"#00000000"});
+lists.push({text:"都市",score:1,c:"#00000000"});
+lists.push({text:"果物",score:1,c:"#00000000"});
+lists.push({text:"アルコール",score:1,c:"#00000000"});
+lists.push({text:"口",score:1,c:"#00000000"});
+lists.push({text:"ハト",score:1,c:"#00000000"});
+lists.push({text:"オウム",score:1,c:"#00000000"});
+lists.push({text:"アヒル",score:1,c:"#00000000"});
+lists.push({text:"カモメ",score:1,c:"#00000000"});
+lists.push({text:"白鳥",score:1,c:"#00000000"});
+lists.push({text:"ダチョウ",score:1,c:"#00000000"});
+lists.push({text:"雀",score:1,c:"#00000000"});
+lists.push({text:"檻",score:1,c:"#00000000"});
+lists.push({text:"動物園",score:1,c:"#00000000"});
+lists.push({text:"フェンス",score:1,c:"#00000000"});
+lists.push({text:"サバンナ",score:1,c:"#00000000"});
+lists.push({text:"家畜",score:1,c:"#00000000"});
+lists.push({text:"オオカミ",score:1,c:"#00000000"});
+lists.push({text:"雪",score:1,c:"#00000000"});
+lists.push({text:"犬",score:1,c:"#00000000"});
+lists.push({text:"ネズミ",score:1,c:"#00000000"});
+lists.push({text:"ビーバー",score:1,c:"#00000000"});
+lists.push({text:"ハムスター",score:1,c:"#00000000"});
+lists.push({text:"ひまわり",score:1,c:"#00000000"});
+lists.push({text:"牛乳",score:1,c:"#00000000"});
+lists.push({text:"牛",score:1,c:"#00000000"});
+lists.push({text:"鹿",score:1,c:"#00000000"});
+lists.push({text:"馬",score:1,c:"#00000000"});
+lists.push({text:"キリン",score:1,c:"#00000000"});
+lists.push({text:"象",score:1,c:"#00000000"});
+lists.push({text:"カンブリア爆発",score:1,c:"#00000000"});
+lists.push({text:"アノマロカリス",score:1,c:"#00000000"});
+lists.push({text:"切り株",score:1,c:"#00000000"});
+lists.push({text:"捕食",score:1,c:"#00000000"});
+lists.push({text:"目",score:1,c:"#00000000"});
+lists.push({text:"アンドロイド",score:1,c:"#00000000"});
+lists.push({text:"車",score:1,c:"#00000000"});
+lists.push({text:"人新世",score:1,c:"#00000000"});
+lists.push({text:"神話",score:1,c:"#00000000"});
+lists.push({text:"宇宙人",score:1,c:"#00000000"});
+lists.push({text:"CP対称性の破れ",score:1,c:"#00000000"});
+lists.push({text:"爆発",score:1,c:"#00000000"});
+lists.push({text:"砂漠",score:1,c:"#00000000"});
+lists.push({text:"レプトン",score:1,c:"#00000000"});
+lists.push({text:"フォトン",score:1,c:"#00000000"});
+lists.push({text:"クォーク",score:1,c:"#00000000"});
+lists.push({text:"グルーオン",score:1,c:"#00000000"});
+lists.push({text:"謎",score:1,c:"#00000000"});
+lists.push({text:"甲殻類",score:1,c:"#00000000"});
+lists.push({text:"昆虫",score:1,c:"#00000000"});
+lists.push({text:"カブトクラゲ",score:1,c:"#00000000"});
+lists.push({text:"クラゲ",score:1,c:"#00000000"});
+lists.push({text:"マンボウ",score:1,c:"#00000000"});
+lists.push({text:"鯨類",score:1,c:"#00000000"});
+lists.push({text:"イルカ",score:1,c:"#00000000"});
+lists.push({text:"カワイルカ",score:1,c:"#00000000"});
+lists.push({text:"サメ",score:1,c:"#00000000"});
+lists.push({text:"珪藻",score:1,c:"#00000000"});
+lists.push({text:"レンズ",score:1,c:"#00000000"});
+lists.push({text:"陽子",score:1,c:"#00000000"});
+lists.push({text:"中性子",score:1,c:"#00000000"});
+lists.push({text:"ミクロ",score:1,c:"#00000000"});
+lists.push({text:"ゲージ粒子",score:1,c:"#00000000"});
+lists.push({text:"石像",score:1,c:"#00000000"});
+lists.push({text:"機械",score:1,c:"#00000000"});
+lists.push({text:"空気",score:1,c:"#00000000"});
+lists.push({text:"平原",score:1,c:"#00000000"});
+lists.push({text:"放射性物質",score:1,c:"#00000000"});
+lists.push({text:"火薬",score:1,c:"#00000000"});
+lists.push({text:"爆弾",score:1,c:"#00000000"});
+lists.push({text:"英雄",score:1,c:"#00000000"});
+lists.push({text:"花火",score:1,c:"#00000000"});
+lists.push({text:"虹",score:1,c:"#00000000"});
+lists.push({text:"原子力",score:1,c:"#00000000"});
+lists.push({text:"木材",score:1,c:"#00000000"});
+lists.push({text:"石材",score:1,c:"#00000000"});
+lists.push({text:"粘土",score:1,c:"#00000000"});
+lists.push({text:"レンガ",score:1,c:"#00000000"});
+lists.push({text:"シャベル",score:1,c:"#00000000"});
+lists.push({text:"家",score:1,c:"#00000000"});
+lists.push({text:"二酸化炭素",score:1,c:"#00000000"});
+lists.push({text:"酸素",score:1,c:"#00000000"});
+lists.push({text:"鉱山",score:1,c:"#00000000"});
+lists.push({text:"車輪",score:1,c:"#00000000"});
+lists.push({text:"硫黄",score:1,c:"#00000000"});
+lists.push({text:"腐食",score:1,c:"#00000000"});
+lists.push({text:"歯車",score:1,c:"#00000000"});
+lists.push({text:"水酸化ナトリウム",score:1,c:"#00000000"});
+lists.push({text:"炭素",score:1,c:"#00000000"});
+lists.push({text:"硫酸",score:1,c:"#00000000"});
+lists.push({text:"電気",score:1,c:"#00000000"});
+lists.push({text:"石油",score:1,c:"#00000000"});
+lists.push({text:"農業",score:1,c:"#00000000"});
+lists.push({text:"くわ",score:1,c:"#00000000"});
+lists.push({text:"つるはし",score:1,c:"#00000000"});
+lists.push({text:"斧",score:1,c:"#00000000"});
+lists.push({text:"刃",score:1,c:"#00000000"});
+lists.push({text:"剣",score:1,c:"#00000000"});
+lists.push({text:"血",score:1,c:"#00000000"});
+lists.push({text:"老化",score:1,c:"#00000000"});
+lists.push({text:"葬儀",score:1,c:"#00000000"});
+lists.push({text:"哺乳類",score:1,c:"#00000000"});
+lists.push({text:"雨",score:1,c:"#00000000"});
+lists.push({text:"水草",score:1,c:"#00000000"});
+lists.push({text:"成長",score:1,c:"#00000000"});
+lists.push({text:"災害",score:1,c:"#00000000"});
+lists.push({text:"海綿",score:1,c:"#00000000"});
+lists.push({text:"サンゴ礁",score:1,c:"#00000000"});
+lists.push({text:"水",score:1,c:"#00000000"});
+lists.push({text:"風",score:1,c:"#00000000"});
+lists.push({text:"進化",score:1,c:"#00000000"});
+lists.push({text:"雷",score:1,c:"#00000000"});
+lists.push({text:"蒸気",score:1,c:"#00000000"});
+lists.push({text:"自然",score:1,c:"#00000000"});
+lists.push({text:"雲",score:1,c:"#00000000"});
+lists.push({text:"海洋",score:1,c:"#00000000"});
+lists.push({text:"沼地",score:1,c:"#00000000"});
+lists.push({text:"川",score:1,c:"#00000000"});
+lists.push({text:"山",score:1,c:"#00000000"});
+lists.push({text:"骨",score:1,c:"#00000000"});
+lists.push({text:"化石",score:1,c:"#00000000"});
+lists.push({text:"言葉",score:1,c:"#00000000"});
+lists.push({text:"毛",score:1,c:"#00000000"});
+lists.push({text:"道具",score:1,c:"#00000000"});
+lists.push({text:"綿花",score:1,c:"#00000000"});
+lists.push({text:"被子植物",score:1,c:"#00000000"});
+lists.push({text:"金",score:1,c:"#00000000"});
+lists.push({text:"権力",score:1,c:"#00000000"});
+lists.push({text:"紙",score:1,c:"#00000000"});
+lists.push({text:"戦争",score:1,c:"#00000000"});
+lists.push({text:"王",score:1,c:"#00000000"});
+lists.push({text:"飛行機",score:1,c:"#00000000"});
+lists.push({text:"文明",score:1,c:"#00000000"});
+lists.push({text:"軍隊",score:1,c:"#00000000"});
+lists.push({text:"戦闘機",score:1,c:"#00000000"});
+lists.push({text:"チェス",score:1,c:"#00000000"});
+lists.push({text:"紙幣",score:1,c:"#00000000"});
+lists.push({text:"世界",score:1,c:"#00000000"});
+lists.push({text:"国",score:1,c:"#00000000"});
+lists.push({text:"数学",score:1,c:"#00000000"});
+lists.push({text:"代数",score:1,c:"#00000000"});
+lists.push({text:"石",score:1,c:"#00000000"});
+lists.push({text:"ビーチ",score:1,c:"#00000000"});
+lists.push({text:"寒さ",score:1,c:"#00000000"});
+lists.push({text:"魚類",score:1,c:"#00000000"});
+lists.push({text:"古生代",score:1,c:"#00000000"});
+lists.push({text:"金星",score:1,c:"#00000000"});
+lists.push({text:"赤外線",score:1,c:"#00000000"});
+lists.push({text:"土星",score:1,c:"#00000000"});
+lists.push({text:"絶滅",score:1,c:"#00000000"});
+lists.push({text:"紫外線",score:1,c:"#00000000"});
+lists.push({text:"赤外線",score:1,c:"#00000000"});
+lists.push({text:"火星",score:1,c:"#00000000"});
+lists.push({text:"地球",score:1,c:"#00000000"});
+lists.push({text:"隕石",score:1,c:"#00000000"});
+lists.push({text:"原生代",score:1,c:"#00000000"});
+lists.push({text:"両生類",score:1,c:"#00000000"});
+lists.push({text:"新生代",score:1,c:"#00000000"});
+lists.push({text:"中生代",score:1,c:"#00000000"});
+lists.push({text:"羊",score:1,c:"#00000000"});
+lists.push({text:"熱帯雨林",score:1,c:"#00000000"});
+lists.push({text:"竜脚類",score:1,c:"#00000000"});
+lists.push({text:"鳥類",score:1,c:"#00000000"});
+lists.push({text:"インコ",score:1,c:"#00000000"});
+lists.push({text:"霊長類",score:1,c:"#00000000"});
+lists.push({text:"獣脚類",score:1,c:"#00000000"});
+lists.push({text:"恐竜",score:1,c:"#00000000"});
+lists.push({text:"ライオン",score:1,c:"#00000000"});
+lists.push({text:"カエル",score:1,c:"#00000000"});
+lists.push({text:"馬",score:1,c:"#00000000"});
+lists.push({text:"牛",score:1,c:"#00000000"});
+lists.push({text:"トカゲ",score:1,c:"#00000000"});
+lists.push({text:"エネルギー",score:1,c:"#00000000"});
+lists.push({text:"化学エネルギー",score:1,c:"#00000000"});
+lists.push({text:"光",score:1,c:"#00000000"});
+lists.push({text:"代謝",score:1,c:"#00000000"});
+lists.push({text:"熱",score:1,c:"#00000000"});
+lists.push({text:"水圧",score:1,c:"#00000000"});
+lists.push({text:"人間",score:1,c:"#00000000"});
+lists.push({text:"時間",score:1,c:"#00000000"});
+lists.push({text:"誕生",score:1,c:"#00000000"});
+lists.push({text:"死",score:1,c:"#00000000"});
+lists.push({text:"色",score:1,c:"#00000000"});
+lists.push({text:"太陽",score:1,c:"#00000000"});
+lists.push({text:"月",score:1,c:"#00000000"});
+lists.push({text:"土地",score:1,c:"#00000000"});
+lists.push({text:"平野",score:1,c:"#00000000"});
+lists.push({text:"木",score:1,c:"#00000000"});
+lists.push({text:"森",score:1,c:"#00000000"});
+lists.push({text:"ガラス",score:1,c:"#00000000"});
+lists.push({text:"夜",score:1,c:"#00000000"});
+lists.push({text:"昼",score:1,c:"#00000000"});
+lists.push({text:"愛",score:1,c:"#00000000"});
+lists.push({text:"宇宙",score:1,c:"#00000000"});
+lists.push({text:"圧力",score:1,c:"#00000000"});
+lists.push({text:"ガス",score:1,c:"#00000000"});
+lists.push({text:"真核生物",score:1,c:"#00000000"});
+lists.push({text:"生命",score:1,c:"#00000000"});
+lists.push({text:"細菌",score:1,c:"#00000000"});
+lists.push({text:"藻類",score:1,c:"#00000000"});
+lists.push({text:"動物",score:1,c:"#00000000"});
+lists.push({text:"後方鞭毛生物",score:1,c:"#00000000"});
+lists.push({text:"真菌",score:1,c:"#00000000"});
+lists.push({text:"植物",score:1,c:"#00000000"});
+lists.push({text:"緑藻",score:1,c:"#00000000"});
+lists.push({text:"紅藻",score:1,c:"#00000000"});
+lists.push({text:"褐藻",score:1,c:"#00000000"});
+lists.push({text:"原虫",score:1,c:"#00000000"});
+lists.push({text:"古細菌",score:1,c:"#00000000"});
+lists.push({text:"DNA",score:1,c:"#00000000"});
+lists.push({text:"変異",score:1,c:"#00000000"});
+lists.push({text:"染色体",score:1,c:"#00000000"});
+lists.push({text:"タンパク質",score:1,c:"#00000000"});
+lists.push({text:"アミノ酸",score:1,c:"#00000000"});
+lists.push({text:"溶岩",score:1,c:"#00000000"});
+lists.push({text:"火山",score:1,c:"#00000000"});
+lists.push({text:"原始海洋",score:1,c:"#00000000"});
+lists.push({text:"砂",score:1,c:"#00000000"});
+lists.push({text:"銅",score:1,c:"#00000000"});
+lists.push({text:"氷",score:1,c:"#00000000"});
+lists.push({text:"金属",score:1,c:"#00000000"});
+lists.push({text:"テスト",score:1,c:"#00000000"});
+spawnButton("水");
+spawnButton("火");
+spawnButton("風");
+spawnButton("雷");
+function spawnButton(text){
+    let index=lists.findIndex((elem)=>elem.text==text);
+    buttons.push({id:Math.round(Math.random()*999999),score:lists[index].score,x:120+buttons.length*120-120*11*Math.floor(buttons.length/11),y:60+120*Math.floor(buttons.length/11),w:100,h:100,text:lists[index].text,c:lists[index].c,c2:"#000000",status:"待機"});
+}
+function translate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(const b of buttons){
+    /*システムボタン*/
+    if(b.status=="システム"){
+    if(b.interval>0){
+        b.interval--;
+    }else{
+        b.c2="#000000";
+    }
+    }
+    /*その他*/
+    c.rect(b.x,b.y,b.w,b.h,3,b.c2,b.c);
+    ctx.fillStyle="#000000";
+    ctx.fillText(b.text,b.x,b.y);
+    }
+    ctx.fill();
+    requestAnimationFrame(translate);
+}
+translate();
+canvas.addEventListener("click",(evt)=>{
+    for(const b of buttons){
+        if(c.collisionRect(b.x,b.y,b.w,b.h,mouse.x,mouse.y)===true){
+        if(b.status=="システム" && b.text=="連想する"){
+            b.c2="#bbe2cb";
+            b.interval=4;
+            let index=buttons.findIndex((elem)=>elem.status=="選択中");
+            while(index!=-1){
+                buttons[index].c2="#000000";
+                buttons[index].status="待機";
+                index=buttons.findIndex((elem)=>elem.status=="選択中");
+                }
+            let res=-1;
+            let com=[];
+            for(let K=0; K<alchemyRecipe.length; ++K){
+                com[K]=0;
+                for(let k=0; k<alchemyRecipe[K].resources.length; ++k){
+                for(let i=0; i<alchemyTable.length; ++i){
+                if(alchemyRecipe[K].resources[k]==alchemyTable[i]){
+                    com[K]++;
+                    }
+                }
+                }
+            }
+            for(let K=0; K<alchemyRecipe.length; ++K){
+                if(com[K]==alchemyRecipe[K].resources.length && alchemyRecipe[K].resources.length==alchemyTable.length){
+                    res=K;
+                }
+            }
+            console.log(res);
+            if(res!=-1){
+                for(let k=0; k<alchemyRecipe[res].results.length; ++k){
+                    if(buttons.findIndex((elem)=>elem.text==alchemyRecipe[res].results[k])==-1){
+                    spawnButton(alchemyRecipe[res].results[k]);
+                    }
+                }
+            }
+            alchemyTable=[];
+        }else if(b.status=="待機"){
+        alchemyTable.push(b.text);
+        b.c2="#bbe2cb";
+        b.status="選択中";
+            }else if(b.status=="選択中"){
+        c.deleteObject("alchemyTable",alchemyTable.indexOf(b.text));
+        b.c2="#000000";
+        b.status="待機";
+            }
+        }
+    }
+});
