@@ -1,6 +1,9 @@
 const c=new hachchchctx();
 const canvas = document.querySelector(".canvas");
 const ctx = canvas.getContext("2d");
+var t=Date.now();
+const time=document.querySelector("#time");
+const scoreText=document.querySelector("#scoreText");
 ctx.font = "22px serif";
 ctx.textAlign = "center";
 ctx.textBaseline = "middle";
@@ -227,7 +230,7 @@ resources:["車輪","金属"],
 results:["歯車"]
         },{
 resources:["川","歯車"],
-results:["力学的エネルギー"]
+results:["運動"]
         },{
 resources:["砂","水"],
 results:["粘土"]
@@ -541,6 +544,12 @@ results:["サバンナ"]
 resources:["猫","サバンナ"],
 results:["ライオン"]
     },{
+resources:["CP対称性の破れ","時間"],
+results:["CPT対称性の破れ"]
+    },{
+resources:["熱","時間"],
+results:["エントロピー"]
+    },{
 resources:["家","家畜"],
 results:["フェンス"]
     },{
@@ -732,10 +741,23 @@ results:["二酸化炭素"]
     },{
 resources:["酸素","炭素"],
 results:["二酸化炭素"]
+    },{
+resources:["運動","時間"],
+results:["加速度"]
+    },{
+resources:["加速度","自然"],
+results:["重力"]
+    },{
+resources:["加速度","自然"],
+results:["グラビトン"]
 }];
 lists.push({text:"火",score:1,c:"#00000000"});
+lists.push({text:"重力",score:1,c:"#00000000"});
+lists.push({text:"グラビトン",score:1,c:"#00000000"});
+lists.push({text:"CPT対称性の破れ",score:1,c:"#00000000"});
 lists.push({text:"ガス惑星",score:1,c:"#00000000"});
 lists.push({text:"星",score:1,c:"#00000000"});
+lists.push({text:"エントロピー",score:1,c:"#00000000"});
 lists.push({text:"アメリカ",score:1,c:"#00000000"});
 lists.push({text:"ビッグバン",score:1,c:"#00000000"});
 lists.push({text:"コケ",score:1,c:"#00000000"});
@@ -744,6 +766,8 @@ lists.push({text:"アマモ",score:1,c:"#00000000"});
 lists.push({text:"昆虫",score:1,c:"#00000000"});
 lists.push({text:"カブトムシ",score:1,c:"#00000000"});
 lists.push({text:"英語",score:1,c:"#00000000"});
+lists.push({text:"運動",score:1,c:"#00000000"});
+lists.push({text:"加速度",score:1,c:"#00000000"});
 lists.push({text:"地衣類",score:1,c:"#00000000"});
 lists.push({text:"テラフォーミング",score:1,c:"#00000000"});
 lists.push({text:"マングローブ",score:1,c:"#00000000"});
@@ -1001,9 +1025,11 @@ spawnButton("風");
 spawnButton("雷");
 function spawnButton(text){
     let index=lists.findIndex((elem)=>elem.text==text);
+    scoreText.innerHTML=parseInt(scoreText.innerHTML)+lists[index].score;
     buttons.push({id:Math.round(Math.random()*999999),score:lists[index].score,x:120+buttons.length*120-120*11*Math.floor(buttons.length/11),y:60+120*Math.floor(buttons.length/11),w:100,h:100,text:lists[index].text,c:lists[index].c,c2:"#000000",status:"待機"});
 }
 function translate(){
+    time.innerHTML=Math.ceil((Date.now()-t)/1000);
     ctx.clearRect(0,0,canvas.width,canvas.height);
     for(const b of buttons){
     /*システムボタン*/
